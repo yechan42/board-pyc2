@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>list</h1>
+<ul>
+    <!-- ${} : 속성을 접근 , 속성이 가리키는 객체의 갯수만큼 반복, 순차 접근-->
+    <li th:each="memo : ${attr}">
+        [[${memo.mno}]] <span th:text="${memo.memoText}"/>
+    </li>
+</ul>
+<a th:href="@{/static}"> go home</a><br/>
+</body>
+</html>
