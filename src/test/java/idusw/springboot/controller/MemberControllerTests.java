@@ -50,7 +50,7 @@ public class MemberControllerTests {
         IntStream.rangeClosed(1, 33).forEach(i -> {
             MemberEntity member = MemberEntity.builder()
                     .seq(Long.valueOf(i))
-                    .email("email" + i + "@induk.ac.kr")
+                    .email("email" + i + "@induk.ac.kr") //
                     .pw("pw" + i)
                     .name("name" + i)
                     .build();

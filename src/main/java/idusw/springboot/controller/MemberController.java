@@ -19,6 +19,17 @@ public class MemberController {
         this.memberService = memberService;
     }
     HttpSession session = null;
+    @GetMapping("/list")
+    public String listMember2(Model model) {
+        List<Member> result = null;
+        if((result = memberService.readList()) != null) {
+            model.addAttribute("list", result);
+            return "/members/list2";
+        }
+        else
+            return "/errors/404";
+
+    }
     @GetMapping("/login-form")
     public String getLoginform(Model model) {
         model.addAttribute("member", Member.builder().build()); // email / pw 전달을 위한 객체
@@ -50,6 +61,7 @@ public class MemberController {
         else
             return "/errors/404";
     }
+
     @GetMapping("/register-form")
     public String getRegisterForm(Model model) { // form 요청 -> view (template engine)
         model.addAttribute("member", Member.builder().build());
