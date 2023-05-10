@@ -1,6 +1,9 @@
 package idusw.springboot.controller;
 
+import ch.qos.logback.core.model.INamedModel;
 import idusw.springboot.domain.Member;
+import idusw.springboot.domain.PageRequestDTO;
+import idusw.springboot.domain.PageResultDTO;
 import idusw.springboot.entity.MemberEntity;
 import idusw.springboot.repository.MemberRepository;
 import idusw.springboot.service.MemberService;
@@ -70,5 +73,25 @@ public class MemberControllerTests {
         else
             System.out.println("등록 실패");
     }
+@Test
+    public void testPageList(){
+    PageRequestDTO pageRequestDTO = PageRequestDTO.builder().page(9).size(3).build();
+    PageResultDTO<Member, MemberEntity> resultDTO= memberService.getList(pageRequestDTO);
+    //print records in page 
+    for(Member member : resultDTO.getDtoList())
+        System.out.println(member);
+    /**
+     * // boolean 은 lombok으로 generation할 때 is로 생성함, setter 는 setPrev()
+     * int totalPage 인 경우 getter는  getTotalPage(), setter setTotalPage()
+     * // @Data == @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode.
+     */
+    System.out.println("Prev : " + resultDTO.isPrev());
+    System.out.println("Next : " + resultDTO.isNext());
+    System.out.println("Total : " + resultDTO.getTotalPage());
+    resultDTO.getPageList().forEach(i -> System.out.println(i));
+    for(Integer i : resultDTO.getPageList())
+        System.out.println(i);
+    }
 
 }
+

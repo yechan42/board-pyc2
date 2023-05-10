@@ -1,6 +1,9 @@
 package idusw.springboot.controller;
 
 import idusw.springboot.domain.Member;
+import idusw.springboot.domain.PageRequestDTO;
+import idusw.springboot.domain.PageResultDTO;
+import idusw.springboot.entity.MemberEntity;
 import idusw.springboot.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -19,12 +22,16 @@ public class MemberController {
         this.memberService = memberService;
     }
     HttpSession session = null;
-    @GetMapping("/list")
-    public String listMember2(Model model) {
-        List<Member> result = null;
-        if((result = memberService.readList()) != null) {
-            model.addAttribute("list", result);
-            return "/members/list2";
+    @GetMapping("/list/{pn}/{size}")
+    public String listMemberPagination(@PathVariable("pn") int pn, @PathVariable("size") int size, Model model) {
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder().page(pn).size(size).build();
+        PageResultDTO<Member, MemberEntity> resultDTO= memberService.getList(pageRequestDTO);
+
+        if(resultDTO != null) {
+            model.addAttribute("list", resultDTO.getDtoList()); //record
+            model.addAttribute("pageList",resultDTO.getPageList()); //page numberList
+
+            return "/members/list";
         }
         else
             return "/errors/404";
