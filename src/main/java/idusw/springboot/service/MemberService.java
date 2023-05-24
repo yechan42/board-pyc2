@@ -18,7 +18,9 @@ public interface MemberService {
 
     Member login(Member m);
 
+    // java 1.8 : 인터페이스가 기본 메소드를 가질 수 있도록 함.
     PageResultDTO<Member, MemberEntity> getList(PageRequestDTO requestDTO);
+
     default MemberEntity dtoToEntity(Member dto) { // dto객체를 entity 객체로 변환 : service -> repository
         MemberEntity entity = MemberEntity.builder()
                 .seq(dto.getSeq())

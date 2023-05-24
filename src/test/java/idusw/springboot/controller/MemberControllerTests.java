@@ -75,7 +75,7 @@ public class MemberControllerTests {
     }
 @Test
     public void testPageList(){
-    PageRequestDTO pageRequestDTO = PageRequestDTO.builder().page(9).size(3).build();
+    PageRequestDTO pageRequestDTO = PageRequestDTO.builder().page(9).perPage(3).build();
     PageResultDTO<Member, MemberEntity> resultDTO= memberService.getList(pageRequestDTO);
     //print records in page 
     for(Member member : resultDTO.getDtoList())

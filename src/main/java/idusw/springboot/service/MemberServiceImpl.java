@@ -1,9 +1,12 @@
 package idusw.springboot.service;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import idusw.springboot.domain.Member;
 import idusw.springboot.domain.PageRequestDTO;
 import idusw.springboot.domain.PageResultDTO;
 import idusw.springboot.entity.MemberEntity;
+import idusw.springboot.entity.QMemberEntity;
 import idusw.springboot.repository.MemberRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -105,17 +108,62 @@ public class MemberServiceImpl implements MemberService {
             }
             return result;
         }
+
     @Override
     public PageResultDTO<Member, MemberEntity> getList(PageRequestDTO requestDTO) {
-        Pageable pageable = requestDTO.getPageable(Sort.by("seq").ascending());
+        Sort sort = Sort.by("seq").descending();
+        /*
+        if(requestDTO.getSort() == null)
+            sort = Sort.by("seq").descending();
+        else
+            sort = Sort.by("seq").ascending();
 
-        Page<MemberEntity> result = memberRepository.findAll(pageable);
+         */
+        Pageable pageable = requestDTO.getPageable(sort);
+        //Page<MemberEntity> result = memberRepository.findAll(pageable);
+
+        BooleanBuilder booleanBuilder =  findByCondition(requestDTO);
+        Page<MemberEntity> result = memberRepository.findAll(booleanBuilder, pageable);
+
         Function<MemberEntity, Member> fn = (entity -> entityToDto(entity));
 
-        return new PageResultDTO<>(result, fn);
+        PageResultDTO pageResultDTO = new PageResultDTO<>(result, fn, requestDTO.getPerPagination());
+
+        return pageResultDTO;
     }
+    private BooleanBuilder findByCondition(PageRequestDTO pageRequestDTO) { //Condition (검색 조건)을 QueryDSL을 활용하여 객체로 생성
+            String type = pageRequestDTO.getType();
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        QMemberEntity qMemberEntity = QMemberEntity.memberEntity;
+        BooleanExpression expression = qMemberEntity.seq.gt(0L); // where seq > 0 and title == "title"
+        booleanBuilder.and(expression);
+        if(type == null || type.trim().length() == 0) {
+            return booleanBuilder;
+        }
+        String keyword = pageRequestDTO.getKeyword();
 
+        System.out.println("findByCondition " + type + " : " + keyword);
 
-
+        BooleanBuilder conditionBuilder = new BooleanBuilder();
+        if(type.contains("e")) { // email로 검색
+            conditionBuilder.or(qMemberEntity.email.contains(keyword));
+        }
+        if(type.contains("n")) { // email로 검색
+            conditionBuilder.or(qMemberEntity.name.contains(keyword));
+        }
+        /*
+        if(type.contains("p")) { // phone로 검색
+            conditionBuilder.or(qMemberEntity.phone.contains(keyword));
+        }
+        if(type.contains("a")) { // address로 검색
+            conditionBuilder.or(qMemberEntity.address.contains(keyword));
+        } // 조건을 전부 줄 수도 있으니 if else문 아님
+        if(type.contains("l")) {
+            conditionBuilder.or(qMemberEntity.level.contains(keyword));
+        }
+         */
+        booleanBuilder.and(conditionBuilder);
+        return booleanBuilder;
+    }
 
 }
