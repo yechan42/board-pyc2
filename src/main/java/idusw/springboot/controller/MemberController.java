@@ -29,8 +29,8 @@ public class MemberController {
     */
     @GetMapping(value ={"", "/"} ) // ?page=&perPage=
     public String listMemberPagination(@RequestParam(value="page", required = false, defaultValue = "1") int page,
-                                       @RequestParam(value="perPage", required = false, defaultValue = "10") int perPage,
-                                       @RequestParam(value="perPagination", required = false, defaultValue ="5") int perPagination,
+                                       @RequestParam(value="per-page", required = false, defaultValue = "10") int perPage,
+                                       @RequestParam(value="per-pagination", required = false, defaultValue ="5") int perPagination,
                                        @RequestParam(value="type", required = false, defaultValue ="e") String type,
                                        @RequestParam(value="keyword", required = false, defaultValue ="@") String keyword,
                                        Model model) {

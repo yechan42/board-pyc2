@@ -50,7 +50,7 @@ public class MemberControllerTests {
     @Test
     void initializeMember() {
         // Integer 데이터 흐름, Lambda 식 - 함수형 언어의 특징을 활용
-        IntStream.rangeClosed(1, 33).forEach(i -> {
+        IntStream.rangeClosed(1, 70).forEach(i -> {
             MemberEntity member = MemberEntity.builder()
                     .seq(Long.valueOf(i))
                     .email("email" + i + "@induk.ac.kr") //
@@ -75,7 +75,11 @@ public class MemberControllerTests {
     }
 @Test
     public void testPageList(){
-    PageRequestDTO pageRequestDTO = PageRequestDTO.builder().page(9).perPage(3).build();
+    PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+            .page(11)
+            .perPage(5)
+            .perPagination(5)
+            .build();
     PageResultDTO<Member, MemberEntity> resultDTO= memberService.getList(pageRequestDTO);
     //print records in page 
     for(Member member : resultDTO.getDtoList())
@@ -88,9 +92,11 @@ public class MemberControllerTests {
     System.out.println("Prev : " + resultDTO.isPrev());
     System.out.println("Next : " + resultDTO.isNext());
     System.out.println("Total : " + resultDTO.getTotalPage());
-    resultDTO.getPageList().forEach(i -> System.out.println(i));
+    //Java Lambda : -> 함수형 인터페이스, method chaining 방식
+   // resultDTO.getPageList().forEach(i -> System.out.println(i));
     for(Integer i : resultDTO.getPageList())
-        System.out.println(i);
+        System.out.format("%03d",i);
+
     }
 
 }

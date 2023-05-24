@@ -145,6 +145,11 @@ public class MemberServiceImpl implements MemberService {
         System.out.println("findByCondition " + type + " : " + keyword);
 
         BooleanBuilder conditionBuilder = new BooleanBuilder();
+        //select * from member where
+        //seq > 0
+        //email=keyword or name=keyword
+        //select * from member where seq > 0 and email=keyword or name=keyword
+
         if(type.contains("e")) { // email로 검색
             conditionBuilder.or(qMemberEntity.email.contains(keyword));
         }
